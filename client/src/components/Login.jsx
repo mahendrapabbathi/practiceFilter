@@ -53,7 +53,11 @@ const Login = () => {
         }
     }
 
-    
+     useEffect(()=>{
+        if(token){
+            navigate('/');
+        }
+    },[token])
 
   return (
     <form onSubmit={onHandleSubmit} className='flex items-center justify-center h-screen'>

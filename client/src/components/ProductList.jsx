@@ -59,7 +59,7 @@ const ProductList = ({search,category,price,color}) => {
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 space-y-4 mt-4'>
         {
             filteredProducts.map((item,index)=>{
-                return <ProductItem key={index} image={item.img} title={item.title} star={item.star} reviews={item.reviews} prevPrice={item.prevPrice} newPrice={item.newPrice}  />
+                return <ProductItem key={index} id={item.id} image={item.img} title={item.title} star={item.star} reviews={item.reviews} prevPrice={item.prevPrice} newPrice={item.newPrice}  />
             })
         }
         

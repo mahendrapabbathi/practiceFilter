@@ -1,10 +1,29 @@
 import { Heart, ShoppingCart, User } from 'lucide-react'
-import React from 'react'
-import {useNavigate} from 'react-router-dom'
+import React, { useContext } from 'react'
+import { ShopContext } from '../context/shopContext'
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Navbar = ({search, setSearch}) => {
 
-  const navigate = useNavigate();
+  const {token, setToken, navigate, backendUrl} = useContext(ShopContext);
+
+  const logout = async () =>{
+    try {
+      const response = await axios.post(`${backendUrl}/api/user/logout`);
+    if(response.data.success){
+      setToken(null);
+      localStorage.removeItem("token")
+      navigate('/login')
+      toast.success(response.data.message)
+    }else{
+      toast.error(response.data.error)
+    }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
 
   return (
     <div className='flex justify-between py-4  border-b px-16'>
@@ -19,7 +38,7 @@ const Navbar = ({search, setSearch}) => {
             <User className='cursor-pointer' />
         </div>
 
-        <button onClick={()=>navigate('/login')} className='border px-4 rounded text-white bg-black hover:bg-gray-900 cursor-pointer'>Sign Up</button>
+        <button onClick={logout} className='border px-4 rounded text-white bg-black hover:bg-gray-900 cursor-pointer'>{token ? "Logout" : "Sign Up"}</button>
       </div>
     </div>
   )

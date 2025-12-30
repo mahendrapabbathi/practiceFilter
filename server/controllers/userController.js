@@ -20,8 +20,10 @@ export const register = async (req, res) => {
         })
 
         await newUser.save()
+        const token = jwt.sign({ id: newUser._id }, process.env.SECRET_TOKEN, { expiresIn: '7d' })
 
-        res.json({ success: true, message: "User Registered Successfully" })
+        res.json({ success: true, token })
+
     } catch (error) {
         console.log(error)
         res.json({ success: false, message: error.message })
@@ -46,28 +48,17 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.SECRET_TOKEN, { expiresIn: '7d' })
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
-
-        res.json({ success: true, message:"Login successful" })
+        res.json({ success: true, token })
 
     } catch (error) {
         console.log(error)
         res.json({ success: false, message: error.message })
     }
-
 }
 
 export const logout = async (req, res) => {
-    res.clearCookie('token',{
-        httpOnly:true,
-        sameSite:"strict",
-        secure:true
-    })
-    res.json({success:true, message:"Logout successful"})
-}
+  res.json({
+    success: true,
+    message: "Logged out successfully"
+  });
+};

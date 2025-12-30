@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import axios from 'axios'
+import {toast} from 'react-toastify'
+import { ShopContext } from '../context/shopContext'
 
 const Login = () => {
 
-    const [currState, setCurrState] = useState("Sign Up")
+    const {token,setToken, backendUrl,navigate} = useContext(ShopContext)
+
+    const [currState, setCurrState] = useState("Login")
     const [data, setData] = useState({
         username : "",
         email : "",
@@ -14,11 +19,41 @@ const Login = () => {
         const value = e.target.value;
         setData({...data,[name]:value})
     }
-    console.log(data)
+    // console.log(data)
 
     const onHandleSubmit = async (e) =>{
         e.preventDefault();
+        try {
+            if(currState === "Sign Up"){
+                const response = await axios.post(`${backendUrl}/api/user/register`,data);
+                // console.log(response.data)
+                if(response.data.success){
+                    setToken(response.data.token);
+                    localStorage.setItem('token',response.data.token)
+                    toast.success("Register Successful");
+                }
+                else{
+                    toast.error(response.data.error);
+                }
+            }
+            else{
+                const response = await axios.post(`${backendUrl}/api/user/login`,{email:data.email,password:data.password})
+                if(response.data.success){
+                    setToken(response.data.token)
+                    localStorage.setItem('token',response.data.token)
+                    toast.success("Login Successful")
+                }
+                else{
+                    toast.error(response.data.message)
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message)
+        }
     }
+
+    
 
   return (
     <form onSubmit={onHandleSubmit} className='flex items-center justify-center h-screen'>

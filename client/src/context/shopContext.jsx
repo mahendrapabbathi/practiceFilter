@@ -9,33 +9,88 @@ const ShopContextProvider = ({ children }) => {
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState({});
+  const [cartItems, setCartItems] = useState(()=>{
+    const savedCart = localStorage.getItem('cartItems');
+    return savedCart ? JSON.parse(savedCart) : {}
+  });
+  const delivery_fee = 10;
 
-  const addToCart = async (id) => {
+  function addToCart(product) {
+    setCartItems((prev) => {
+      const existing = prev[product.id];
+      return {
+        ...prev, [product.id]: {
+          product,
+          quantity: existing ? existing.quantity + 1 : 1,
+        },
+      };
+    });
+  }
+
+  const increaseQuantity = (product) => {
     setCartItems((prev)=>({
-      ...prev,[id]:(prev[id] || 0) + 1,
-    }));
+      ...prev,[product.id]:{
+        ...prev[product.id],
+        quantity:prev[product.id].quantity + 1
+      }
+    }))
+  }
+
+  const decreaseQuantity = (product) => {
+    setCartItems((prev)=>{
+      const copy = {...prev};
+      if(copy[product.id].quantity > 1){
+        copy[product.id] = {
+          ...copy[product.id],
+          quantity:copy[product.id].quantity - 1,
+        }
+      }
+      else{
+        delete copy[product.id]
+      }
+      return copy;
+    })
   }
 
   const getCartCount = () => {
     let total = 0;
     for(const key in cartItems){
-      total += cartItems[key];
+      total += cartItems[key].quantity;
     }
     return total;
   }
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (product) => {
     setCartItems((prev)=>{
       const copy = {...prev};
-      if(copy[id] > 1) copy[id] -= 1;
-      else delete copy[id];
+      if(!copy[product.id]) return copy;
+      if(copy[product.id].quantity > 1){
+        copy[product.id] = {
+          ...copy[product.id],
+          quantity : copy[product.id].quantity-1
+        }
+      }
+      else delete copy[product.id];
       return copy;
     })
   }
 
+  const getCartTotalAmount = () => {
+    let total = 0;
+    for(const key in cartItems){
+      total += cartItems[key].quantity * cartItems[key].product.newPrice;
+    }
+    return total;
+  }
+
   useEffect(()=>{
-    console.log(cartItems)
+    if(!token && localStorage.getItem('token')){
+      setToken(localStorage.getItem('token'))
+    }
+  })
+
+  useEffect(()=>{
+    localStorage.setItem('cartItems',JSON.stringify(cartItems))
   },[cartItems])
 
   const value = {
@@ -45,8 +100,13 @@ const ShopContextProvider = ({ children }) => {
     navigate,
     addToCart,
     cartItems,
+    setCartItems,
     getCartCount,
-    removeFromCart
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    delivery_fee,
+    getCartTotalAmount
   };
 
   return (

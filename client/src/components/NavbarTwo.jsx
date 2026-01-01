@@ -3,26 +3,17 @@ import React, { useContext } from 'react'
 import { ShopContext } from '../context/shopContext';
 import axios from 'axios'
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const NavbarTwo = () => {
 
-    const {token, setToken, navigate, backendUrl,getCartCount} = useContext(ShopContext);
+    const {token, setToken, navigate, backendUrl,getCartCount, setCartItems} = useContext(ShopContext);
 
   const logout = async () =>{
-    try {
-      const response = await axios.post(`${backendUrl}/api/user/logout`);
-    if(response.data.success){
-      setToken(null);
-      localStorage.removeItem("token")
-      navigate('/login')
-      toast.success(response.data.message)
-    }else{
-      toast.error(response.data.error)
-    }
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
-    }
+    navigate('/login');
+    localStorage.removeItem('token');
+    setToken(null);
+    setCartItems({})
   }
 
   return (
@@ -32,8 +23,8 @@ const NavbarTwo = () => {
         <div className='flex gap-4'>
             <Heart className='cursor-pointer'/>
             <div className='relative'>
-              <ShoppingCart className='cursor-pointer '/>
-              <div className=' bg-black rounded-full text-white flex justify-center items-center w-4 h-4 absolute -bottom-0 -right-1 '>{getCartCount()}</div>
+              <Link to={'/cart'}><ShoppingCart className='cursor-pointer'/></Link>
+              <div className=' bg-black text-xs rounded-full text-white flex justify-center items-center w-4 h-4 absolute -bottom-0 -right-1 '>{getCartCount()}</div>
             </div>
             <User className='cursor-pointer' />
         </div>

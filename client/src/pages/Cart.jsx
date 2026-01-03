@@ -28,8 +28,8 @@ const Cart = () => {
                             <div className='flex flex-col gap-3'>
                                 <h1 className='hidden sm:block font-semibold text-xl w-70'>{item.product.title}</h1>
                                 <div className='hidden sm:flex gap-3'>
-                                    <p className=''>Price : <span className='font-semibold'>${item.product.newPrice}</span></p>
-                                    <p>Brand : <span className='font-semibold'>{item.product.company}</span></p>
+                                    <p className=''>Price : <span className='font-semibold'>${item.product.price}</span></p>
+                                    <p>Category : <span className='font-semibold'>{item.product.category}</span></p>
                                 </div>
                             </div>
                             <div className='flex  gap-4 px-4 items-center '>

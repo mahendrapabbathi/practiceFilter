@@ -3,10 +3,11 @@ import React, { useContext } from 'react'
 import { ShopContext } from '../context/shopContext'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({search, setSearch}) => {
 
-  const {token, setToken, navigate, backendUrl} = useContext(ShopContext);
+  const {token, setToken, navigate, backendUrl, getCartCount} = useContext(ShopContext);
 
   const logout = async () =>{
     try {
@@ -34,7 +35,10 @@ const Navbar = ({search, setSearch}) => {
       <div className='flex gap-8'>
         <div className='flex gap-4'>
             <Heart className='cursor-pointer'/>
-            <ShoppingCart className='cursor-pointer'/>
+            <div className='relative'>
+              <Link to={'/cart'}><ShoppingCart className='cursor-pointer'/></Link>
+              <div className=' bg-black text-xs rounded-full text-white flex justify-center items-center w-4 h-4 absolute bottom-1 -right-1 '>{getCartCount()}</div>
+            </div>
             <User className='cursor-pointer' />
         </div>
 

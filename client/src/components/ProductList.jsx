@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ProductItem from './ProductItem'
-import data from '../assets/assets'
+// import data from '../assets/assets'
+import { ShopContext } from '../context/shopContext'
 
 const ProductList = ({search,category,price,color}) => {
+
+    const {data} = useContext(ShopContext)
 
     const [menu, setMenu] = useState("All Products")
     const [filteredProducts, setFilteredProducts] = useState([])
@@ -41,7 +44,7 @@ const ProductList = ({search,category,price,color}) => {
 
     useEffect(()=>{
         filterd();
-    },[menu,search,category,price,color])
+    },[data,menu,search,category,price,color])
 
 
   return (
@@ -59,7 +62,7 @@ const ProductList = ({search,category,price,color}) => {
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 space-y-4 mt-4'>
         {
             filteredProducts.map((item,index)=>{
-                return <ProductItem key={index} id={item.id} image={item.img} title={item.title} star={item.star} reviews={item.reviews} prevPrice={item.prevPrice} newPrice={item.newPrice}  />
+                return <ProductItem key={index} id={item._id} image={item.img} title={item.title}  description={item.description} price={item.price}  />
             })
         }
         
